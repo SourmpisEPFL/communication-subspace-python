@@ -25,13 +25,13 @@ def ReducedRankRegress(Y, X, dim, ridgeinit=False, scale=False, qopt=None):
     # Exclude neurons with 0 variance
     m = X.mean(0)
     s = X.std(0)
+    p = X.shape[1]
     # idxs = np.argwhere(np.abs(s) < np.sqrt(np.spacing(np.double(1))))
     idxs = np.where(np.logical_not(np.isclose(s, 0)))[0]
     X = X[:, idxs]
     m = m[idxs]
     (n, K) = Y.shape
 
-    p = X.shape[1]
     Z = X - m
 
     # here we need to put the optimization lambda stuff

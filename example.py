@@ -13,12 +13,6 @@ X = data['X']
 Y_V1 = data['Y_V1']
 Y_V2  = data['Y_V2']
 
-
-Ytrain = Y_V1[:1000, :]
-Ytest = Y_V1[:1000, :]
-Xtrain = X[:1000, :]
-Xtest = X[:1000, :]
-
 _, B_, _ = ReducedRankRegress(Y_V2, X, np.array([1]))
 
 # q=30

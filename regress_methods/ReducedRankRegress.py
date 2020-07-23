@@ -29,10 +29,9 @@ def ReducedRankRegress(Y, X, dim, ridgeinit=False, scale=False, qopt=None):
     # idxs = np.argwhere(np.abs(s) < np.sqrt(np.spacing(np.double(1))))
     idxs = np.where(np.logical_not(np.isclose(s, 0)))[0]
     X = X[:, idxs]
-    m = m[idxs]
     (n, K) = Y.shape
 
-    Z = X - m
+    Z = X - m[idxs]
 
     # here we need to put the optimization lambda stuff
     ridge = Ridge(alpha=0) # with 0 is equivalent to ols
@@ -48,20 +47,13 @@ def ReducedRankRegress(Y, X, dim, ridgeinit=False, scale=False, qopt=None):
 
     if idxs.size != p:
         Bnew = B_.copy()
-        B_ = np.zeros((p+1, K))
-        B_[1:, :] = Bnew[1:,:]
-        B_[0, :] = Bnew[0, :]
+        B_ = np.zeros((p, K))
+        B_[idxs, :] = Bnew
 
     B = np.zeros((p, K*dim.size))
     for i, j in enumerate(dim):
-        B[:, K*i:K*(i+1)] = Bfull @ V[:, :j] @ V[:, :j].T
+        B[idxs, K*i:K*(i+1)] = Bfull @ V[:, :j] @ V[:, :j].T
 
     B = np.row_stack([np.repeat(Y.mean(0), dim.size) - m @ B, B])
-
-    if idxs.size != p:
-        Bnew = B.copy()
-        B = np.zeros((p+1, K * dim.size))
-        B[1:, :] = Bnew[1:,:]
-        B[0, :] = Bnew[0, :]
 
     return B, B_, V

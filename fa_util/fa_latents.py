@@ -12,13 +12,13 @@ def ExtractFaLatents(X, q=0):
         q = np.arange(p)
 
     '''if len(q) > 1:
-        qOpt = FactorAnalysisModelSelect(CrossValFa(X, q, C_CV_NUM_FOLDS, C_CV_OPTIONS), q);
+        qopt = FactorAnalysisModelSelect(CrossValFa(X, q, C_CV_NUM_FOLDS, C_CV_OPTIONS), q);
     else:
-        qOpt = q;'''
-    qOpt = q
+        qopt = q;'''
+    qopt = q
     Sigma = np.cov(X,rowvar=False)
 
-    [L, psi] = FactorAnalysis(Sigma, qOpt)
+    [L, psi] = FactorAnalysis(Sigma, qopt)
 
     Psi = np.diag(psi)
 
@@ -123,21 +123,20 @@ def matlab_mldivide(A,b):
                 pass  # picked bad variables, can't solve
     return sol
 
-def FactorRegress(Y, X, q, qOpt = []):
+def FactorRegress(Y, X, q, qopt = 11):
     [n, K] = Y.shape
     [_,p] = X.shape
 
-    if qOpt == []:
-        '''qFactorAnalysis = np.arange(p)
-        qOpt = FactorAnalysisModelSelect(...
-        CrossValFa(X, qFactorAnalysis), qFactorAnalysis)'''
+    # if qopt == []:
+    #     qFactorAnalysis = np.arange(p)
+    #     qOpt = FactorAnalysisModelSelect(...
+    #     CrossValFa(X, qFactorAnalysis), qFactorAnalysis)
 
-    q0pt = 11
     m = np.mean(X,axis=0)
     M = np.tile(m,(n,1))
-    q= [x for x in q if x <= q0pt]
+    q= [x for x in q if x <= qopt]
     if len(q) < 1:
-        q = qOpt
+        q = qopt
 
     Sigma = np.cov(X, rowvar=False)
     s = np.diag(Sigma)
@@ -152,13 +151,13 @@ def FactorRegress(Y, X, q, qOpt = []):
 
 
 
-    [L, psi] = FactorAnalysis(Sigma, q0pt)
+    [L, psi] = FactorAnalysis(Sigma, qopt)
 
     Psi = np.diag(psi)
 
     C = L@L.T + Psi
     [_, sdiag, V] = scipy.linalg.svd(L, 0)
-    S = np.zeros((q0pt, q0pt))
+    S = np.zeros((qopt, qopt))
     np.fill_diagonal(S, sdiag)
     Q = matlab_mldivide(C,L) @ V @ S.T
     if q[0] == 0:

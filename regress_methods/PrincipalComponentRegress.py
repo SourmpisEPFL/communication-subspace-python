@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.linear_model import Ridge
 from sklearn.decomposition import PCA
 
-def PrincipalComponentRegress(Y, X, dim):
+def PrincipalComponentRegress(Y, X, dim, qopt=None):
     """B = PrincipalComponentRegress(Y, X, q) fits a Principal Component
      Regression model, with dimensionality given by q, to target variables
      Y and source variables X, returning the mapping matrix B (which includes

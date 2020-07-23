@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.linear_model import Ridge
 from sklearn.decomposition import PCA
 
-def ReducedRankRegress(Y, X, dim, ridgeinit=False, scale=False):
+def ReducedRankRegress(Y, X, dim, ridgeinit=False, scale=False, qopt=None):
     """  B = ReducedRankRegress(Y, X, dim) fits a Reduced Rank Regression model,
       with number of predictive dimensions given by dim, to target variables Y
       and source variables X, returning the mapping matrix B (which includes

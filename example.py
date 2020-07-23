@@ -1,6 +1,7 @@
 from scipy.io import loadmat
 from regress_util.RegressFitAndPredict import RegressFitAndPredict
 from regress_methods.ReducedRankRegress import ReducedRankRegress
+from fa_util.fa_latents import FactorRegress
 from fa_util.fa_latents import ExtractFaLatents
 import numpy as np
 from sklearn.model_selection import KFold
@@ -37,5 +38,26 @@ for train_ind, test_ind in k.split(X):
     numDimsForPrediction, lossmeasure='NSE')]
 
 cvLoss = np.vstack(cvLoss)
+plt.figure()
+plt.errorbar(numDimsForPrediction, 1 - cvLoss.mean(0), yerr=cvLoss.std(0) / np.sqrt(numFolds))
 
-plt.errorbar(numDimsForPrediction, cvLoss.mean(0), yerr=cvLoss.std(0) / np.sqrt(numFolds))
+#########################################################33
+
+# Factor Regression
+numDimsUsedForPrediction = np.arange(10) + 1
+
+k = KFold(n_splits=numFolds, shuffle=True)
+
+qopt = 11 # this is taken from matlab, be caruful magic number
+cvLoss = []
+for train_ind, test_ind in k.split(X):
+    Xtrain, Ytrain = X[train_ind], Y_V2[train_ind]
+    Xtest, Ytest = X[test_ind], Y_V2[test_ind]
+
+    cvLoss += [RegressFitAndPredict(FactorRegress,
+    Ytrain, Xtrain, Ytest, Xtest,
+    numDimsUsedForPrediction, lossmeasure='NSE', qopt=qopt)]
+
+cvLoss = np.vstack(cvLoss)
+plt.figure()
+plt.errorbar(numDimsUsedForPrediction, 1 - cvLoss.mean(0), yerr=cvLoss.std(0) / np.sqrt(numFolds))

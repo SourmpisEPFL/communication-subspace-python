@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.linear_model import Ridge
 from sklearn.decomposition import PCA
 
-def ReducedRankRegress(Y, X, dim, ridgeinit=False, scale=False, qopt=None):
+def ReducedRankRegress(Y, X, dim, ridgeinit=False, scale=False, qopt=None, alpha=0):
     """  B = ReducedRankRegress(Y, X, dim) fits a Reduced Rank Regression model,
       with number of predictive dimensions given by dim, to target variables Y
       and source variables X, returning the mapping matrix B (which includes
@@ -34,7 +34,7 @@ def ReducedRankRegress(Y, X, dim, ridgeinit=False, scale=False, qopt=None):
     Z = X - m[idxs]
 
     # here we need to put the optimization lambda stuff
-    ridge = Ridge(alpha=0) # with 0 is equivalent to ols
+    ridge = Ridge(alpha=alpha) # with 0 is equivalent to ols
     ridge.fit(Z, Y)
     Bfull = ridge.coef_.T
 

@@ -29,29 +29,29 @@ for train_ind, test_ind in k.split(X):
 
     cvLoss += [RegressFitAndPredict(ReducedRankRegress,
     Ytrain, Xtrain, Ytest, Xtest,
-    numDimsForPrediction, lossmeasure='NSE')]
+    numDimsForPrediction, lossmeasure='NSE', alpha=50000)]
 
 cvLoss = np.vstack(cvLoss)
 plt.figure()
 plt.errorbar(numDimsForPrediction, 1 - cvLoss.mean(0), yerr=cvLoss.std(0) / np.sqrt(numFolds))
 
 #########################################################33
-
-# Factor Regression
-numDimsUsedForPrediction = np.arange(10) + 1
-
-k = KFold(n_splits=numFolds, shuffle=True)
-
-qopt = 11 # this is taken from matlab, be caruful magic number
-cvLoss = []
-for train_ind, test_ind in k.split(X):
-    Xtrain, Ytrain = X[train_ind], Y_V2[train_ind]
-    Xtest, Ytest = X[test_ind], Y_V2[test_ind]
-
-    cvLoss += [RegressFitAndPredict(FactorRegress,
-    Ytrain, Xtrain, Ytest, Xtest,
-    numDimsUsedForPrediction, lossmeasure='NSE', qopt=qopt)]
-
-cvLoss = np.vstack(cvLoss)
-plt.figure()
-plt.errorbar(numDimsUsedForPrediction, 1 - cvLoss.mean(0), yerr=cvLoss.std(0) / np.sqrt(numFolds))
+#
+# # Factor Regression
+# numDimsUsedForPrediction = np.arange(10) + 1
+#
+# k = KFold(n_splits=numFolds, shuffle=True)
+#
+# qopt = 11 # this is taken from matlab, be caruful magic number
+# cvLoss = []
+# for train_ind, test_ind in k.split(X):
+#     Xtrain, Ytrain = X[train_ind], Y_V2[train_ind]
+#     Xtest, Ytest = X[test_ind], Y_V2[test_ind]
+#
+#     cvLoss += [RegressFitAndPredict(FactorRegress,
+#     Ytrain, Xtrain, Ytest, Xtest,
+#     numDimsUsedForPrediction, lossmeasure='NSE', qopt=qopt)]
+#
+# cvLoss = np.vstack(cvLoss)
+# plt.figure()
+# plt.errorbar(numDimsUsedForPrediction, 1 - cvLoss.mean(0), yerr=cvLoss.std(0) / np.sqrt(numFolds))

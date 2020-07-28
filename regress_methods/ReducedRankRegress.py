@@ -22,6 +22,9 @@ def ReducedRankRegress(Y, X, dim, ridgeinit=False, scale=False, qopt=None, alpha
      V np.ndarray : colums are the eigenvectors
     """
 
+    if dim.max() > X.shape[1]:
+        print('dimension asked higher than available cropping to the right size')
+        dim[dim > X.shape[1]] = X.shape[1]
     # Exclude neurons with 0 variance
     m = X.mean(0)
     s = X.std(0)
@@ -38,7 +41,7 @@ def ReducedRankRegress(Y, X, dim, ridgeinit=False, scale=False, qopt=None, alpha
     ridge.fit(Z, Y)
     Bfull = ridge.coef_.T
 
-    ridge.intercept_ = 0
+    # ridge.intercept_ = 0
     Yhat = ridge.predict(Z)
 
     V = PCA().fit(Yhat).components_.T
@@ -54,6 +57,6 @@ def ReducedRankRegress(Y, X, dim, ridgeinit=False, scale=False, qopt=None, alpha
     for i, j in enumerate(dim):
         B[idxs, K*i:K*(i+1)] = Bfull @ V[:, :j] @ V[:, :j].T
 
-    B = np.row_stack([np.repeat(Y.mean(0), dim.size) - m @ B, B])
+    B = np.row_stack([np.tile(Y.mean(0), dim.size) - m @ B, B])
 
     return B, B_, V

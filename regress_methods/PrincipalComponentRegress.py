@@ -46,6 +46,6 @@ def PrincipalComponentRegress(Y, X, dim, qopt=None, alpha=0):
 
     # import ipdb;ipdb.set_trace()
     B = B / np.repeat(X.std(0), dim.size * K).reshape(B.shape[0], B.shape[1])
-    B = np.row_stack([np.repeat(Y.mean(0), dim.size) - m @ B, B])
+    B = np.row_stack([np.tile(Y.mean(0), dim.size) - m @ B, B])
 
     return B

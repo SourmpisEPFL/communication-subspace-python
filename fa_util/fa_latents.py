@@ -123,7 +123,7 @@ def matlab_mldivide(A,b):
                 pass  # picked bad variables, can't solve
     return sol
 
-def FactorRegress(Y, X, q, qopt = 11):
+def FactorRegress(Y, X, q, qopt = 11, alpha=0):
     [n, K] = Y.shape
     [_,p] = X.shape
 

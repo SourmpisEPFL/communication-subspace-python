@@ -167,3 +167,37 @@ def drop_quiet_cells(spks, min_av_spks, verbose=True):
     if verbose:
         print('Dropped', sum(np.logical_not(cell_mask)), 'of the original', len(cell_mask), 'cells')
     return spks[cell_mask, :, :]
+
+
+def calculate_psths(spikes, vis_left=dat['contrast_left'], vis_right=dat['contrast_right']):
+    """
+    get spikes and substracts the corresponding psth that accounts for this particular trial
+    type, meaning particular contrast valuse
+    """
+
+    cases = np.array([(i, j) for i in np.unique(vis_right) for j in np.unique(vis_left)])
+    psths = np.zeros((len(cases), a.shape[0], a.shape[2]))
+    case_cnt = np.zeros((len(cases),))
+    for i in range(a.shape[1]):
+        for caseid, case in enumerate(cases):
+            if (np.array([vis_right[i], vis_left[i]]) == case).all():
+                psths[caseid, :] += a[:, i, :]
+                case_cnt[caseid] += 1
+    psths = np.array([psths[i, :, :]/j for i, j in enumerate(case_cnt)])
+    for i in range(a.shape[1]):
+        for caseid, case in enumerate(cases):
+            if (np.array([vis_right[i], vis_left[i]]) == case).all():
+                a[:,i,:] -= psths[caseid, :, :]
+    return a
+
+def spike_from_stimulus_type(spikes, contrast, vis_left=dat['contrast_left'], vis_right=dat['contrast_right']):
+    '''
+    get spikes and a particular contrast type and returns all the trials with this particular contrast values
+    '''
+    cases = np.array([(i, j) for i in np.unique(vis_right) for j in np.unique(vis_left)])
+    trials = []
+    for i in range(a.shape[1]):
+        if (np.array([vis_right[i], vis_left[i]]) == contrast).all():
+            trials += [i]
+    trials = np.array(trials)
+    return spikes[:, trials, :]
